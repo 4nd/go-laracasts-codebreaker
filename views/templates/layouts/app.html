@@ -1,0 +1,18 @@
+{{ define "app" }}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{{ block "title" . }}Default Title{{ end }}</title>
+        {{ template "styles" . }}
+    </head>
+    <body class="pt-8 bg-primary text-white print:bg-white print:text-black grid place-items-center h-full">
+    {{ block "body" . }}
+    {{ end }}
+    {{ template "scripts" . }}
+    </body>
+    </html>
+{{ end }}

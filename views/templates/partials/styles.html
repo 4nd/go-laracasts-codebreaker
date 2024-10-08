@@ -1,0 +1,10 @@
+{{ define "styles" }}
+    {{ if .viteHot }}
+        <script type="module" src="http://localhost:5173/@vite/client" data-navigate-track="reload"></script>
+        <link rel="stylesheet" href="http://localhost:5173/assets/src/app.css" data-navigate-track="reload"/>
+    {{ else }}
+        {{ range $style := .styles }}
+            <link rel="stylesheet" href="/assets/dist/{{ $style }}"/>
+        {{ end }}
+    {{ end }}
+{{ end }}

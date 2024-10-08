@@ -1,0 +1,10 @@
+{{ define "scripts" }}
+    {{ if .viteHot }}
+        <script type="module" src="http://localhost:5173/@vite/client" data-navigate-track="reload"></script>
+        <script type="module" src="http://localhost:5173/assets/src/app.js" data-navigate-track="reload"></script>
+    {{ else }}
+        {{ range $script := .scripts }}
+            <script type="module" src="/assets/dist/{{ $script }}"></script>
+        {{ end }}
+    {{ end }}
+{{ end }}

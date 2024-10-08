@@ -15,10 +15,12 @@ lerna-debug.log*
 .DS_Store
 .env
 !.env.example
+vite-hot
 .idea/
 /assets/dist/
 /build/
 /dist/
 /node_modules/
 /out/
+/tmp/
 

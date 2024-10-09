@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math/rand"
 	"time"
 	"unicode"
@@ -45,12 +44,9 @@ func LettersToRandomSymbols() map[string]string {
 	symbols := *symbols()
 	randomizer := rand.New(rand.NewSource(time.Now().Unix()))
 	randomIndexes := randomizer.Perm(len(symbols))
-	log.Printf("Random symbols: %v", symbols)
-	log.Printf("Random indexes: %v", randomIndexes)
 	index := 0
 	for letter := 'a'; letter <= 'z'; letter++ {
 		Letter := string(unicode.ToUpper(letter))
-		log.Printf("Random symbol: %v", symbols[randomIndexes[index]])
 		letters[Letter] = symbols[randomIndexes[index]]
 		index++
 	}

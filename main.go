@@ -3,6 +3,7 @@ package main
 import (
 	"code-breaker/config"
 	"code-breaker/views"
+	"encoding/gob"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
@@ -14,6 +15,8 @@ import (
 
 func main() {
 	config.Init()
+	sessionStore := config.SetupRedisSessions()
+	gob.Register(map[string]string{})
 
 	r := chi.NewRouter()
 
@@ -28,6 +31,18 @@ func main() {
 	)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		session, err := sessionStore.Get(r, "code-breaker")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		session.Values["name"] = "Andy"
+		err = session.Save(r, w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		views.RenderTemplate(w, "index.html", map[string]interface{}{
 			"Name": "Andy",
 		})
@@ -35,13 +50,27 @@ func main() {
 
 	r.Post("/message", func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
-		message := r.Form.Get("message")
-		if message == "" {
-			log.Println("Message empty")
+		session, err := sessionStore.Get(r, "code-breaker")
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		letters := LettersToRandomSymbols()
+		message := r.Form.Get("message")
+		if message == "" {
+			return
+		}
+
+		if letters := session.Values["letters"]; letters == nil {
+			session.Values["letters"] = LettersToRandomSymbols()
+			err := session.Save(r, w)
+			if err != nil {
+				log.Printf("Error saving session: %v", err)
+			}
+		}
+
+		letters := session.Values["letters"].(map[string]string)
 		words := getWordsAsSlices(strings.Split(message, " "), letters)
 
 		views.RenderTemplate(w, "code.html", map[string]interface{}{
